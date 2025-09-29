@@ -38,4 +38,6 @@ public class Tarea {
 	
 	@Enumerated(value = EnumType.STRING)
 	private Estado estado;
+	
+	
 }
