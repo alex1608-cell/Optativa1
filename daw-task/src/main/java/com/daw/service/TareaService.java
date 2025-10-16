@@ -2,6 +2,7 @@ package com.daw.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class TareaService {
 		tareaBD.setTitulo(tarea.getTitulo());
 		tareaBD.setFechaVencimiento(tarea.getFechaVencimiento());
 		
-		return this.tareaRepository.save(tarea);
+		return this.tareaRepository.save(tareaBD);
 	}
 	
 	// delete
@@ -97,6 +98,19 @@ public class TareaService {
 			return this.tareaRepository.save(tarea);
 		}
 		
+		// Completar una tarea
+		
+		public Tarea completarTarea(int idTarea) {
+		
+			Tarea tarea = findById(idTarea);
+			
+			if(tarea.getEstado() != Estado.EN_PROGRESO) {
+				throw new TareaNotFoundException("La tarea solo se puede completar cuando esta EN PROGRESO");
+			}
+			tarea.setEstado(Estado.COMPLETADO);
+			return tareaRepository.save(tarea);
+		}
+		
 	// Tarea pendientes
 		
 		public List<Tarea> pendientes(){
@@ -113,5 +127,30 @@ public class TareaService {
 		
 		public List<Tarea> enProgreso(){
 			return this.tareaRepository.findByEstado(Estado.EN_PROGRESO);
+		}
+		
+	// Obtener las tareas vencidas.
+		
+		public List<Tarea> tareasVencidas(){
+			return this.tareaRepository.findAll().stream()
+					.filter(t -> t.getFechaVencimiento().isBefore(LocalDate.now()))
+					.collect(Collectors.toList());
+		}
+		
+	// Obtener las tareas NO VENCIDAS.
+		
+		public List<Tarea> tareasNoVencidas(){
+			return this.tareaRepository.findAll().stream()
+					.filter(t -> t.getFechaVencimiento().isAfter(LocalDate.now()))
+					.collect(Collectors.toList());
+		}
+		
+	// Obtener tareas mediante su titulo
+		
+		public List<Tarea> tareaBuscarTitulo(String tituloBuscado){
+			return this.tareaRepository.findAll().stream()
+					.filter(t -> t.getTitulo().equalsIgnoreCase(tituloBuscado))
+					.collect(Collectors.toList());
+		
 		}
 }
