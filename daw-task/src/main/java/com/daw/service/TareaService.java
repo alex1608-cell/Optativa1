@@ -87,6 +87,7 @@ public class TareaService {
 			this.tareaRepository.deleteById(idTarea);
 		}
 
+		// Marcar en progreso una tarea
 		public Tarea marcarEnProgreso(int idTarea) {
 			Tarea tarea = this.findById(idTarea);
 
