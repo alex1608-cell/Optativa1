@@ -45,7 +45,7 @@ public class PizzaService {
 
 	// Modificar una pizza
 	public Pizza updatePizza(Pizza pizza, int idPizza) {
-		if (pizza.getIdPizza() != idPizza) {
+		if (pizza.getId() != idPizza) {
 			throw new PizzaExceptions("El id del body y el id del path no coinciden");
 		}
 		if(!this.pizzaRepository.existsById(idPizza)) {
